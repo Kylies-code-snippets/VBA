@@ -1,0 +1,24 @@
+Sub GetData(sqlString As String, destinationRange As String)
+    Dim Connection As ADODB.Connection
+    Dim Recordset As ADODB.Recordset
+    Dim RowsAffected As Long
+    
+    Set Connection = New ADODB.Connection
+       
+    Connection.CommandTimeout = 0
+    Connection.Open ("Provider=MSDASQL; Driver={SQL Server}; Server=XXXXXX; Database=XXXXX; UID=sa; PWD=XXXX;")
+    
+    Set Recordset = Connection.Execute(sqlString, RowsAffected, CommandTypeEnum.adCmdText)
+        
+    If Not Recordset.EOF Then Call ActiveSheet.Range(destinationRange).CopyFromRecordset(Recordset)
+   
+    If (Recordset.State And ObjectStateEnum.adStateOpen) Then Recordset.Close
+    Set Recordset = Nothing
+    
+    If (Connection.State And ObjectStateEnum.adStateOpen) Then Connection.Close
+    Set Connection = Nothing
+    
+End Sub
+
+  sqlString = "xxxxxx"
+  Call GetData(sqlString, "A1")
